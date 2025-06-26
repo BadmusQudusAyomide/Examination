@@ -1,16 +1,26 @@
 <?php
 
-$host = "193.180.215.213";
-$port = "64321";
-$user = "user_77c31690";
-$pass = "5e0e82c123bce1465227a54d5db0e8f3";
-$db = "db_31f6ac6a";
+// Fetch credentials from environment variables, with local fallbacks
+$host = getenv('DB_HOST') ?: 'localhost';
+$port = getenv('DB_PORT') ?: '3306';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASS') ?: '';
+$db = getenv('DB_NAME') ?: 'cee_db';
 $conn = null;
+
+// LOCAL CONNECTION (uncomment to use local database)
+// $host = "localhost";
+// $port = "3306";
+// $user = "root";
+// $pass = "";
+// $db   = "cee_db";
 
 try {
   $conn = new PDO("mysql:host={$host};port={$port};dbname={$db};", $user, $pass);
-} catch (Exception $e) {
-
+  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+  // Never show detailed errors in production
+  die("Database connection failed. Please check configuration.");
 }
 
 
